@@ -1,4 +1,5 @@
-﻿//This script file holds all the little bits and pieces that we need to make or use on various scripts.
+﻿using UnityEngine;
+//This script file holds all the little bits and pieces that we need to make or use on various scripts.
 //Doesn't need a class, can't go on objects.
 
 //Actions enum
@@ -18,10 +19,14 @@ public enum Action
 
 //Response struct
 //This packages up information regarding our possible responses.
+[System.Serializable] //This tells Unity that we can serialize our struct
 public struct Response
 {
     //VARIABLES
+    [SerializeField] //This tells Unity to serialize the variable
     public bool success;
+    [SerializeField]
     public string message;
-    //Item
+   
+    //Item will go here later
 }
