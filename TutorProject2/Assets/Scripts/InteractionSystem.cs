@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 //Zoom at 145% (note for arcade projector)
 
 //This class will handle all our interactions with our level as well as all our inventory and UI manipulation
@@ -11,6 +12,7 @@ public class InteractionSystem : MonoBehaviour
     private Response lastResponse;
     //the current action we're giving to an interactable object
     private Action currentAction;
+    private Interactable currentTarget;
 
 	// Use this for initialization
 	void Start ()
@@ -36,7 +38,8 @@ public class InteractionSystem : MonoBehaviour
                     //interact
                     Debug.Log("Interactable");
                     //pass our current action to the interactable and retrieve a response
-                    lastResponse = clickHit.transform.GetComponent<Interactable>().Interact(currentAction);
+                    //lastResponse = clickHit.transform.GetComponent<Interactable>().Interact(currentAction);
+                    currentTarget = clickHit.transform.GetComponent<Interactable>(); //we're going to store the interactable as our target
                 }
                 else
                 {
@@ -47,6 +50,68 @@ public class InteractionSystem : MonoBehaviour
             }
         }
 	}
+
+    //Our interact method passes our current action to our target and retrieves a response.
+    void Interact()
+    {
+        if(currentTarget != null) //make sure we have a target before we try and interact with it
+        {
+            //last response is where we store the response
+            //it is returned from the interact method on our current target (an Interactable)
+            //it takes our current action as the argument to determine the response
+            lastResponse = currentTarget.Interact(currentAction);
+            Debug.Log(lastResponse.message); //for now we'll just output the message from the response
+        }
+    }
+
+    //---------UI Methods----------//
+    //These methods serve only to allow our button to change our action
+    //and to run our interact method so we can interact with objects.
+    public void Give()
+    {
+        currentAction = Action.give;
+        Interact();
+    }
+    public void PickUp()
+    {
+        currentAction = Action.pickup;
+        Interact();
+    }
+    public void Open()
+    {
+        currentAction = Action.open;
+        Interact();
+    }
+    public void Close()
+    {
+        currentAction = Action.close;
+        Interact();
+    }
+    public void Look()
+    {
+        currentAction = Action.look;
+        Interact();
+    }
+    public void Use()
+    {
+        currentAction = Action.use;
+        Interact();
+    }
+    public void Push()
+    {
+        currentAction = Action.push;
+        Interact();
+    }
+    public void Pull()
+    {
+        currentAction = Action.pull;
+        Interact();
+    }
+    public void Talk()
+    {
+        currentAction = Action.talk;
+        Interact();
+    }
 
     //Gizmos to help us visualise what's happening.
     void OnDrawGizmos()
