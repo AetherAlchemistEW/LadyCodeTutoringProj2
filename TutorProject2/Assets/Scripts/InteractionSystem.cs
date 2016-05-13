@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 //Zoom at 145% (note for arcade projector)
 
@@ -13,6 +14,7 @@ public class InteractionSystem : MonoBehaviour
     //the current action we're giving to an interactable object
     private Action currentAction;
     private Interactable currentTarget;
+    public AvatarMovement avatar;
 
 	// Use this for initialization
 	void Start ()
@@ -36,16 +38,20 @@ public class InteractionSystem : MonoBehaviour
                 if(clickHit.transform.GetComponent<Interactable>())
                 {
                     //interact
-                    Debug.Log("Interactable");
+                    //Debug.Log("Interactable");
                     //pass our current action to the interactable and retrieve a response
                     //lastResponse = clickHit.transform.GetComponent<Interactable>().Interact(currentAction);
                     currentTarget = clickHit.transform.GetComponent<Interactable>(); //we're going to store the interactable as our target
                 }
-                else
+                else if(clickHit.transform.GetComponent<PathSystem>()) //If we've clicked on something with a path system (the backdrop)
                 {
                     //vector3 point
-                    clickedPoint = clickHit.point;
-                    Debug.Log("Not Interactable");
+                    clickedPoint = clickHit.point; //we'll want this soon
+                    PathSystem p = clickHit.transform.GetComponent<PathSystem>(); //Store a reference to the path system for convenience
+                    //pass to avatar
+                    avatar.SetPath(p.path); //pass the path to our avatar, we'll also pass the end point later
+
+                    //Debug.Log("Not Interactable");
                 }
             }
         }
