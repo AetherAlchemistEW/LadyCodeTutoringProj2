@@ -49,9 +49,8 @@ public class InteractionSystem : MonoBehaviour
                     clickedPoint = clickHit.point; //we'll want this soon
                     PathSystem p = clickHit.transform.GetComponent<PathSystem>(); //Store a reference to the path system for convenience
                     //pass to avatar
-                    avatar.SetPath(p.path); //pass the path to our avatar, we'll also pass the end point later
-
-                    //Debug.Log("Not Interactable");
+                    Vector3 point = p.PathPoint(clickedPoint.x); //get the end point of the path from the path system by providing the click
+                    avatar.SetPath(p.path, point); //pass the path to our avatar as well as the end point
                 }
             }
         }
