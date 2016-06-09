@@ -15,6 +15,7 @@ public class InteractionSystem : MonoBehaviour
     private Action currentAction;
     private Interactable currentTarget;
     public AvatarMovement avatar;
+    public List<Item> inventory;
 
 	// Use this for initialization
 	void Start ()
@@ -65,6 +66,17 @@ public class InteractionSystem : MonoBehaviour
             //it is returned from the interact method on our current target (an Interactable)
             //it takes our current action as the argument to determine the response
             lastResponse = currentTarget.Interact(currentAction);
+            if(lastResponse.item != null && inventory.Count < 8)
+            {
+                //collect item
+                if (lastResponse.success)
+                {
+                    inventory.Add(lastResponse.item);
+                    currentTarget.responses[(int)currentAction].success = false;
+                }
+                //remove item from response
+
+            }
             Debug.Log(lastResponse.message); //for now we'll just output the message from the response
         }
     }

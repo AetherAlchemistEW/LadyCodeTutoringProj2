@@ -27,6 +27,19 @@ public struct Response
     public bool success;
     [SerializeField]
     public string message;
-   
+    [SerializeField]
+    public Item item;
     //Item will go here later
+}
+
+[System.Serializable]
+public class Item : ScriptableObject
+{
+    //VARIABLES
+    //name
+    [SerializeField]
+    public string name;
+    //icon
+    [SerializeField]
+    public Texture icon;
 }
