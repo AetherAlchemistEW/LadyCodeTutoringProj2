@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
 //Zoom at 145% (note for arcade projector)
 
 //This class will handle all our interactions with our level as well as all our inventory and UI manipulation
@@ -15,7 +18,18 @@ public class InteractionSystem : MonoBehaviour
     private Action currentAction;
     private Interactable currentTarget;
     public AvatarMovement avatar;
+
+    //UI variables
+    public GameObject canvas;
+    public GameObject reactionPanel;
+    public GameObject inventoryPanel;
+    public Text responseText;
+    public Texture2D basePointer;
+
+    //Inventory variables
     public List<Item> inventory;
+    public List<Image> inventoryUI;
+    public Item selectedItem;
 
 	// Use this for initialization
 	void Start ()
@@ -26,8 +40,17 @@ public class InteractionSystem : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        if(selectedItem != null)
+        {
+            Cursor.SetCursor(selectedItem.icon, Vector2.zero, CursorMode.Auto);
+        }
+        else
+        {
+            Cursor.SetCursor(basePointer, Vector2.zero, CursorMode.Auto);
+        }
+
         //if we click the mouse
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject())
         {
             //make a raycast from the camera to the world
             Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -54,8 +77,49 @@ public class InteractionSystem : MonoBehaviour
                     avatar.SetPath(p.path, point); //pass the path to our avatar as well as the end point
                 }
             }
+            UpdateUI();
         }
 	}
+
+    //Update UI 
+    void UpdateUI()
+    {
+        //ternary
+        bool UiOn = currentTarget != null ? true : false;
+        bool messageDisplay = lastResponse.success;
+
+        reactionPanel.SetActive(messageDisplay);
+        inventoryPanel.SetActive(!messageDisplay);
+
+        //loop through our inventory,
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            //if inventory element != null
+            if (inventory[i] != null)
+            {
+
+                //new Rect, 0,0,itemWidth, itemHeight
+                Rect r = new Rect(0, 0, inventory[i].icon.width, inventory[i].icon.height);
+                //Create Sprite from image
+                Sprite s = Sprite.Create(inventory[i].icon, r, new Vector2(0.5f, 0.5f));
+                //inventory UI[element] = that sprite
+                inventoryUI[i].sprite = s;
+            }
+            else
+            {
+                inventoryUI[i].sprite = null;
+            }
+        }
+    }
+
+    //Select Item method (called from inventory buttons)
+    public void SelectItem(int slot)
+    {
+        if(inventory.Count >= slot && inventory[slot] != null)
+        {
+            selectedItem = inventory[slot];
+        }
+    }
 
     //Our interact method passes our current action to our target and retrieves a response.
     void Interact()
@@ -75,9 +139,8 @@ public class InteractionSystem : MonoBehaviour
                     currentTarget.responses[(int)currentAction].success = false;
                 }
                 //remove item from response
-
             }
-            Debug.Log(lastResponse.message); //for now we'll just output the message from the response
+            UpdateUI();
         }
     }
 

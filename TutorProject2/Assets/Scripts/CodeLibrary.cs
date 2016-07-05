@@ -41,5 +41,5 @@ public class Item : ScriptableObject
     public string name;
     //icon
     [SerializeField]
-    public Texture icon;
+    public Texture2D icon;
 }
